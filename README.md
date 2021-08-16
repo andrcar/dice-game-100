@@ -7,6 +7,7 @@ Rules:
  * If the player stops before throwing a one, the accumulated points are stored.
  * If the player throws a one, the points of that round are lost.
 
-![GitHub Logo](figures/throws_to_reach_100.png)
+Findings:
 
-<img src="figures/throws_to_reach_100.png" alt="drawing" width="100"/>
+Probability distribution of number of throws to reach 100 for different strategies.
+<img src="figures/throws_to_reach_100.png" width="300"/>
