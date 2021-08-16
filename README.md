@@ -10,4 +10,5 @@ Rules:
 Findings:
 
 Probability distribution of number of throws to reach 100 for different strategies.
+
 <img src="figures/throws_to_reach_100.png" width="300"/>
