@@ -8,3 +8,5 @@ Rules:
  * If the player throws a one, the points of that round are lost.
 
 ![GitHub Logo](figures/throws_to_reach_100.png)
+
+<img src="figures/throws_to_reach_100.png" alt="drawing" width="100"/>
