@@ -6,8 +6,5 @@ Rules:
  * A player can throw the die until they 1) choose to stop, or 2) get a one.
  * If the player stops before throwing a one, the accumulated points are stored.
  * If the player throws a one, the points of that round are lost.
-<img src=“figures/throws_to_reach_100.png”
-raw=true
-alt=“Subject Pronouns”
-style=“margin-right: 10px;”
-/>
+
+![GitHub Logo](figures/throws_to_reach_100.png)
