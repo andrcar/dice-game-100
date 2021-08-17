@@ -11,3 +11,8 @@ Simulating and evaluating different strategies in a dice game where a player sho
 Probability distribution of number of throws to reach 100 for different strategies.
 
 <img src="figures/throws_to_reach_100.png" width="500"/>
+
+
+Cumulative probability distribution of number of throws to reach 100 for different strategies.
+
+<img src="figures/throws_to_reach_100_cumprob.png" width="500"/>
