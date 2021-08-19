@@ -4,6 +4,8 @@ import matplotlib as mpl
 
 # added constraint to not play beyond 100
 # all players that reach 100 win
+
+# function for strategy selection
 def run_multiplayer():
 
 	nGamesPerIteration = 3000
@@ -86,7 +88,7 @@ def run_multiplayer():
 
 def run_singleplayer():
 
-	nGamesPerIteration = 100000
+	nGamesPerIteration = 20000
 	nIterations = 1
 	goalScore = 100
 	maxRounds = 50
@@ -174,16 +176,14 @@ def percentilesOfplayerThrows(playerThrows,percentiles,nGamesPerIteration,nPlaye
 	throwsPercentiles = np.zeros((nPlayers,nPercentiles,nIterations))+maxRounds*1.0
 	for iIteration in range(nIterations):
 		for iPlayer in range(nPlayers):
-			iPercentile = 0
-			cumulativeVictories = 0
-			for iRound in range(maxRounds):
-				cumulativeVictories += playerThrows[iPlayer,iRound,iIteration]
-				if cumulativeVictories > nGamesPerIteration*percentiles[iPercentile]/100:
-					rest = cumulativeVictories - (nGamesPerIteration*percentiles[iPercentile]/100)
-					step = playerThrows[iPlayer,iRound,iIteration]
-					throwsPercentiles[iPlayer,iPercentile,iIteration] = iRound + rest/step
-					iPercentile += 1
-					if iPercentile >= nPercentiles:
+			for iPercentile in range(nPercentiles):
+				cumulativeVictories = 0
+				for iRound in range(maxRounds):
+					cumulativeVictories += playerThrows[iPlayer,iRound,iIteration]
+					if cumulativeVictories > nGamesPerIteration*percentiles[iPercentile]/100:
+						rest = cumulativeVictories - (nGamesPerIteration*percentiles[iPercentile]/100)
+						step = playerThrows[iPlayer,iRound,iIteration]
+						throwsPercentiles[iPlayer,iPercentile,iIteration] = iRound + rest/step
 						break
 	return throwsPercentiles
 
