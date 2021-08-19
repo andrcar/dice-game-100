@@ -86,7 +86,7 @@ def run_multiplayer():
 
 def run_singleplayer():
 
-	nGamesPerIteration = 300000
+	nGamesPerIteration = 100000
 	nIterations = 1
 	goalScore = 100
 	maxRounds = 50
@@ -100,7 +100,8 @@ def run_singleplayer():
 	#stratValScore = [15, 20,25]
 	#stratValRoll = [3,4,5,6,7,8,9,10,11,14,15,17,19]
 
-	stratValScore = [15,20,25,34,50,100]
+	#stratValScore = [17,20,25,34,50,100]
+	stratValScore = range(1,100,1)
 	stratValRoll = []
 
 	stratVal = stratValScore + stratValRoll
@@ -126,17 +127,65 @@ def run_singleplayer():
 	print(mean)
 	print("std:")
 	print(std)
-	print("playerThrows:")
-	print(playerThrows)
+
+
 	for iPlayer in range(nPlayers) :
+		playerThrowsReduced = playerThrows[iPlayer,0:-1,0].T/nGamesPerIteration
 		lbl = strat[iPlayer] + " "+ str(stratVal[iPlayer])
-		plt.plot(playerThrows[iPlayer,0:-1,0].T, linewidth=3,label=lbl)
-		print(iPlayer)
-		print(lbl)
-		
-	plt.legend()
+		plot1 = plt.figure(1)
+		plt.plot(playerThrowsReduced, linewidth=3,label=lbl)
+		plt.xlabel("number of rounds", fontdict=None, labelpad=None, size=20)
+		plt.ylabel("probability", fontdict=None, labelpad=None, size=20)
+		font = {'size'   : 16}
+		plt.rc('font', **font)
+		plt.legend(fontsize=18)
+
+		plot2 = plt.figure(2)
+		playerThrowsReducedCumsum = np.cumsum(playerThrowsReduced, axis=None, dtype=None, out=None)
+		plt.plot(playerThrowsReducedCumsum, linewidth=3,label=lbl)
+		plt.xlabel("number of rounds", fontdict=None, labelpad=None, size=20)
+		plt.ylabel("cumulative probability", fontdict=None, labelpad=None, size=20)
+		font = {'size'   : 16}
+		plt.rc('font', **font)
+		plt.legend(loc=2,fontsize=18)
+	
+
+	plot3 = plt.figure(3)
+
+	percentiles = [2,10,25,50,75,90,98]
+	throwsPercentiles = percentilesOfplayerThrows(playerThrows,percentiles,nGamesPerIteration,nPlayers,nIterations,maxRounds)
+	for nPercentiles in range(len(percentiles)):
+		lbl = str(percentiles[nPercentiles])
+		plt.plot(throwsPercentiles[:,nPercentiles,0],linewidth=3,label=lbl)
+	
+	plt.xlabel("strategy value", fontdict=None, labelpad=None, size=20)
+	plt.ylabel("rounds to victory", fontdict=None, labelpad=None, size=20)
+	font = {'size'   : 16}
+	plt.rc('font', **font)
+	plt.legend(loc="upper right",fontsize=18,title="percentile")
+	plt.xlim(0, 100)
+	plt.ylim(0, 40)
 	plt.show()
 	
+
+def percentilesOfplayerThrows(playerThrows,percentiles,nGamesPerIteration,nPlayers,nIterations,maxRounds):
+	nPercentiles = np.size(percentiles,axis=0)
+
+	throwsPercentiles = np.zeros((nPlayers,nPercentiles,nIterations))+maxRounds*1.0
+	for iIteration in range(nIterations):
+		for iPlayer in range(nPlayers):
+			iPercentile = 0
+			cumulativeVictories = 0
+			for iRound in range(maxRounds):
+				cumulativeVictories += playerThrows[iPlayer,iRound,iIteration]
+				if cumulativeVictories > nGamesPerIteration*percentiles[iPercentile]/100:
+					rest = cumulativeVictories - (nGamesPerIteration*percentiles[iPercentile]/100)
+					step = playerThrows[iPlayer,iRound,iIteration]
+					throwsPercentiles[iPlayer,iPercentile,iIteration] = iRound + rest/step
+					iPercentile += 1
+					if iPercentile >= nPercentiles:
+						break
+	return throwsPercentiles
 
 
 def singleplayer_nGames(strat,stratVal,nGamesPerIteration,maxRounds,goalScore,nPlayers,nIterations):
@@ -159,7 +208,7 @@ def one_player_1Game(playerID,strat,stratVal,maxRounds,goalScore):
 		score = 0
 		if strat[ii] == "roll" :
 			while nRolls < stratVal[ii] and score + totalScore <= goalScore:
-				dieValue = ()
+				dieValue = throwDie()
 				if dieValue == 1 :
 					score = 0
 					break
@@ -195,6 +244,8 @@ def playGame(nPlayers, strat, stratVal):
 	#print("winner:")
 	#print(winner)
 	return winner
+
+
 
 
 def playRound(strat, stratVal, nPlayers, playerScoreTotals):
