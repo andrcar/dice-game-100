@@ -1,4 +1,4 @@
-# dice-game-100
+# The dice game: First to 100
 Simulating and evaluating different strategies in a dice game where a player should reach 100 points first.
 
 
